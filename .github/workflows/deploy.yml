@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - master
+      - feature/azure-deployment
+  workflow_dispatch:    
 
 jobs:
 
