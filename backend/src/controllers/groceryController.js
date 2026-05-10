@@ -17,7 +17,7 @@ async function createGrocery(req, res) {
         );
 
         res.status(201).json({
-            message: "Grocery item created successfully",
+            message: "Product(en) toegevoegd.",
             grocery: {
                 id: result.insertId,
                 householdId,
@@ -29,7 +29,7 @@ async function createGrocery(req, res) {
         });
     } catch (error) {
         res.status(500).json({
-            message: "Failed to create grocery item",
+            message: "Producten konden niet worden toegevoegd.",
             error: error.message,
         });
     }

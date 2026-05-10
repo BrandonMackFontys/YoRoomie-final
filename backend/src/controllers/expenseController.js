@@ -37,7 +37,7 @@ async function createExpense(req, res) {
         }
 
         res.status(201).json({
-            message: "Expense created successfully",
+            message: "Uitgave toegevoegd.",
             expense: {
                 id: expenseId,
                 householdId,

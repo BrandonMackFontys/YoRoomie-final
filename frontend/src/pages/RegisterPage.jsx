@@ -38,10 +38,12 @@ function RegisterPage() {
                 <div className="auth-top">
                     <div className="auth-top-shape" />
                     <div className="auth-top-content">
-                        <p className="auth-kicker">Start met jouw huishouden</p>
-                        <h1>Maak een account</h1>
+                        <div class="header-logo">
+                            <img src="../src/assets/logo-wit.png" width="150" />
+                            </div>
+                        <h1 className="new-account">Registreer een account</h1>
                         <p className="auth-subtext">
-                            Registreer en beheer samen kosten, taken en boodschappen.
+                            Beheer samen kosten, taken en boodschappen.
                         </p>
                     </div>
                 </div>
@@ -49,22 +51,22 @@ function RegisterPage() {
                 <div className="auth-panel">
                     <form onSubmit={handleSubmit} className="form auth-form">
                         <label className="field-group">
-                            <span>Naam</span>
+                            <span>Je naam</span>
                             <input
                                 type="text"
                                 name="name"
-                                placeholder="Jouw naam"
+                                placeholder="bijv. John Smit"
                                 value={form.name}
                                 onChange={handleChange}
                             />
                         </label>
 
                         <label className="field-group">
-                            <span>E-mail</span>
+                            <span>E-mailadres</span>
                             <input
                                 type="email"
                                 name="email"
-                                placeholder="jij@email.com"
+                                placeholder="naam@email.com"
                                 value={form.email}
                                 onChange={handleChange}
                             />
@@ -75,14 +77,14 @@ function RegisterPage() {
                             <input
                                 type="password"
                                 name="password"
-                                placeholder="Kies een wachtwoord"
+                                placeholder="•••••••••"
                                 value={form.password}
                                 onChange={handleChange}
                             />
                         </label>
 
                         <button type="submit" className="primary-button">
-                            Account maken
+                            Start met het beheren van jouw huishouden
                         </button>
                     </form>
 
