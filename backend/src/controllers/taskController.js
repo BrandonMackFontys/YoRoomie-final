@@ -23,7 +23,7 @@ async function createTask(req, res) {
         );
 
         res.status(201).json({
-            message: "Task created successfully",
+            message: "Taak toegevoegd.",
             task: {
                 id: result.insertId,
                 householdId,

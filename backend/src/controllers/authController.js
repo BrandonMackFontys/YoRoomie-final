@@ -7,7 +7,7 @@ async function register(req, res) {
         const { name, email, password } = req.body;
 
         if (!name || !email || !password) {
-            return res.status(400).json({ message: "All fields are required" });
+            return res.status(400).json({ message: "Voer je naam, e-mailadres en gewenste wachtwoord in." });
         }
 
         const [existingUsers] = await pool.query(
@@ -16,7 +16,7 @@ async function register(req, res) {
         );
 
         if (existingUsers.length > 0) {
-            return res.status(409).json({ message: "Email already exists" });
+            return res.status(409).json({ message: "Het ingevoerde e-mailadres is reeds in gebruik." });
         }
 
         const passwordHash = await bcrypt.hash(password, 10);
@@ -55,7 +55,7 @@ async function login(req, res) {
         );
 
         if (users.length === 0) {
-            return res.status(401).json({ message: "Invalid credentials" });
+            return res.status(401).json({ message: "Controleer je e-mailadres en wachtwoord." });
         }
 
         const user = users[0];
@@ -63,7 +63,7 @@ async function login(req, res) {
         const passwordMatches = await bcrypt.compare(password, user.password_hash);
 
         if (!passwordMatches) {
-            return res.status(401).json({ message: "Invalid credentials" });
+            return res.status(401).json({ message: "Controleer je e-mailadres en wachtwoord." });
         }
 
         res.json({
