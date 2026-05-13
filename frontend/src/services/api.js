@@ -1,4 +1,4 @@
-const API_BASE_URL = `${import.meta.env.VITE_API_URL}/api`;
+const API_BASE_URL = "http://localhost:3001/api";
 
 export async function registerUser(payload) {
     const response = await fetch(`${API_BASE_URL}/auth/register`, {
@@ -143,5 +143,33 @@ export async function getExpenseParticipants(expenseId) {
 
 export async function getSettlementsByHousehold(householdId) {
     const response = await fetch(`${API_BASE_URL}/expenses/${householdId}/settlements`);
+    return response.json();
+}
+
+export async function deleteTask(taskId) {
+    const response = await fetch(`${API_BASE_URL}/tasks/${taskId}`, {
+        method: "DELETE",
+    });
+
+    return response.json();
+}
+
+export async function deleteGrocery(itemId) {
+    const response = await fetch(`${API_BASE_URL}/groceries/${itemId}`, {
+        method: "DELETE",
+    });
+
+    return response.json();
+}
+
+export async function updateAvatar(payload) {
+    const response = await fetch(`${API_BASE_URL}/auth/avatar`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+    });
+
     return response.json();
 }

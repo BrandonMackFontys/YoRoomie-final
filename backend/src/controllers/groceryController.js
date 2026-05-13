@@ -86,8 +86,31 @@ async function completeGrocery(req, res) {
     }
 }
 
+async function deleteGrocery(req, res) {
+    try {
+        const { itemId } = req.params;
+
+        const [result] = await pool.query(
+            "DELETE FROM groceries WHERE id = ?",
+            [itemId]
+        );
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: "Grocery item not found" });
+        }
+
+        res.json({ message: "Grocery item deleted successfully" });
+    } catch (error) {
+        res.status(500).json({
+            message: "Failed to delete grocery item",
+            error: error.message,
+        });
+    }
+}
+
 module.exports = {
     createGrocery,
     getGroceriesByHousehold,
     completeGrocery,
+    deleteGrocery,
 };

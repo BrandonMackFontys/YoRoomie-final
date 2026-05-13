@@ -2,7 +2,7 @@ const pool = require("../config/db");
 
 async function createTask(req, res) {
     try {
-        const { householdId, title, description, assignedToUserId, dueDate } = req.body;
+        const { householdId, title, description, dueDate } = req.body;
 
         if (!householdId || !title) {
             return res.status(400).json({
@@ -10,26 +10,64 @@ async function createTask(req, res) {
             });
         }
 
+        const [members] = await pool.query(
+            `
+      SELECT
+        hm.user_id,
+        u.name,
+        COUNT(t.id) AS taskCount
+      FROM household_members hm
+      INNER JOIN users u ON u.id = hm.user_id
+      LEFT JOIN tasks t 
+        ON t.assigned_to_user_id = hm.user_id 
+        AND t.household_id = hm.household_id
+      WHERE hm.household_id = ?
+      GROUP BY hm.user_id, u.name
+      `,
+            [householdId]
+        );
+
+        if (members.length === 0) {
+            return res.status(404).json({
+                message: "No household members found",
+            });
+        }
+
+        const minTaskCount = Math.min(
+            ...members.map((member) => Number(member.taskCount))
+        );
+
+        const eligibleMembers = members.filter(
+            (member) => Number(member.taskCount) === minTaskCount
+        );
+
+        const randomMember =
+            eligibleMembers[Math.floor(Math.random() * eligibleMembers.length)];
+
+        const assignedToUserId = randomMember.user_id;
+
         const [result] = await pool.query(
-            `INSERT INTO tasks (household_id, title, description, assigned_to_user_id, due_date, status)
+            `INSERT INTO tasks 
+       (household_id, title, description, assigned_to_user_id, due_date, status)
        VALUES (?, ?, ?, ?, ?, 'open')`,
             [
                 householdId,
                 title,
                 description || null,
-                assignedToUserId || null,
+                assignedToUserId,
                 dueDate || null,
             ]
         );
 
         res.status(201).json({
-            message: "Taak toegevoegd.",
+            message: `Task created and assigned to ${randomMember.name}`,
             task: {
                 id: result.insertId,
                 householdId,
                 title,
                 description,
                 assignedToUserId,
+                assignedToName: randomMember.name,
                 dueDate,
                 status: "open",
             },
@@ -54,7 +92,8 @@ async function getTasksByHousehold(req, res) {
          t.status,
          t.due_date,
          t.assigned_to_user_id,
-         u.name AS assigned_to_name
+         u.name AS assigned_to_name,
+         u.avatar_image AS assigned_to_avatar
        FROM tasks t
        LEFT JOIN users u ON u.id = t.assigned_to_user_id
        WHERE t.household_id = ?
@@ -93,8 +132,31 @@ async function completeTask(req, res) {
     }
 }
 
+async function deleteTask(req, res) {
+    try {
+        const { taskId } = req.params;
+
+        const [result] = await pool.query(
+            "DELETE FROM tasks WHERE id = ?",
+            [taskId]
+        );
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: "Task not found" });
+        }
+
+        res.json({ message: "Task deleted successfully" });
+    } catch (error) {
+        res.status(500).json({
+            message: "Failed to delete task",
+            error: error.message,
+        });
+    }
+}
+
 module.exports = {
     createTask,
     getTasksByHousehold,
     completeTask,
+    deleteTask,
 };

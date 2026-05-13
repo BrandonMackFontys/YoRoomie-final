@@ -30,6 +30,7 @@ async function register(req, res) {
             id: result.insertId,
             name,
             email,
+            avatarImage: null,
         };
 
         res.status(201).json({
@@ -72,6 +73,7 @@ async function login(req, res) {
                 id: user.id,
                 name: user.name,
                 email: user.email,
+                avatarImage: user.avatar_image,
             },
             token: generateToken(user),
         });
@@ -83,7 +85,30 @@ async function login(req, res) {
     }
 }
 
+async function updateAvatar(req, res) {
+    try {
+        const { userId, avatarImage } = req.body;
+
+        if (!userId || !avatarImage) {
+            return res.status(400).json({ message: "userId and avatarImage are required" });
+        }
+
+        await pool.query(
+            "UPDATE users SET avatar_image = ? WHERE id = ?",
+            [avatarImage, userId]
+        );
+
+        res.json({ message: "Avatar updated successfully", avatarImage });
+    } catch (error) {
+        res.status(500).json({
+            message: "Failed to update avatar",
+            error: error.message,
+        });
+    }
+}
+
 module.exports = {
     register,
     login,
+    updateAvatar,
 };
