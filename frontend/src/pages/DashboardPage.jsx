@@ -13,6 +13,8 @@ function DashboardPage() {
     const user = JSON.parse(localStorage.getItem("user"));
 
     const [households, setHouseholds] = useState([]);
+    const selectedHouseholdName =
+        localStorage.getItem("selectedHouseholdName") || "Geen huishouden geselecteerd";
     const [selectedHouseholdId] = useState(
         localStorage.getItem("selectedHouseholdId") || ""
     );

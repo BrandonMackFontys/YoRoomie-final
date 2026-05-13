@@ -74,7 +74,6 @@ function SettingsPage() {
     function handleLogout() {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
-        localStorage.removeItem("selectedHouseholdId");
         localStorage.removeItem("avatarImage");
 
         navigate("/");
@@ -221,7 +220,9 @@ function SettingsPage() {
                                     <button
                                         className="primary-button small"
                                         onClick={() => {
-                                            localStorage.setItem("selectedHouseholdId", household.id);
+                                            localStorage.setItem("selectedHouseholdId", String(household.id));
+                                            localStorage.setItem("selectedHouseholdName", household.name);
+
                                             setSelectedHouseholdId(String(household.id));
                                             setMessage(`${household.name} is geselecteerd`);
                                         }}
