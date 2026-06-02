@@ -1,4 +1,5 @@
-const express = require("express");
+const cors = require("cors");
+const express = require("express"); 
 const corsOptions = {
   origin: "https://yoroomie.azurewebsites.net",
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
